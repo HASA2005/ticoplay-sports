@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: tps_db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+      MARIADB_USER: ${MYSQL_USER}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      # Opción: permitir root desde otros contenedores (phpMyAdmin)
+      MARIADB_ROOT_HOST: "%"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - tps_net
+
+  joomla:
+    image: joomla:php8.2-apache
+    container_name: tps_joomla
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "${JOOMLA_HTTP_PORT}:80"
+    environment:
+      JOOMLA_DB_HOST: db:3306
+      JOOMLA_DB_USER: ${MYSQL_USER}
+      JOOMLA_DB_PASSWORD: ${MYSQL_PASSWORD}
+      JOOMLA_DB_NAME: ${MYSQL_DATABASE}
+    volumes:
+      - ./joomla:/var/www/html
+    networks:
+      - tps_net
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: tps_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "${PHPMYADMIN_HTTP_PORT}:80"
+    environment:
+      PMA_HOST: db
+      # Más seguro: entrar con el usuario de la app
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      # Si prefieres root, borra las dos líneas de arriba y usa la contraseña root en el login.
+    networks:
+      - tps_net
+
+volumes:
+  db_data:
+
+networks:
+  tps_net:

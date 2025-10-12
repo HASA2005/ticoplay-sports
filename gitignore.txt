@@ -1,0 +1,14 @@
+# Carpetas generadas automáticamente
+db_data/
+backups/
+
+# Archivo con contraseñas
+docker/.env
+
+# Configuración del editor o sistema
+.vscode/
+.DS_Store
+
+# Archivos temporales
+*.log
+*.tmp
