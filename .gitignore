@@ -1,0 +1,23 @@
+# === Docker / env / DB ===
+.env
+db_data/
+docker/db_data/
+**/db_data/
+
+# === Joomla (no versionar caché/temporales/logs) ===
+**/cache/
+**/tmp/
+**/logs/
+**/administrator/cache/
+**/administrator/logs/
+**/installation/
+
+# Gantry 5 (compilados)
+**/gantry5/**/cache/
+**/gantry5/**/compiled/
+
+# === SO / IDE ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
